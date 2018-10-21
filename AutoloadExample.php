@@ -8,22 +8,51 @@ namespace gogl92\conekta;
  */
 class AutoloadExample extends \yii\base\Widget
 {
+  $this->apiKey = "";
     public function run()
     {
-$result = "ok";
-	Conekta::setApiKey('1tv5yJp3xnVZ7eK67m4h');
-	try {
-	  $charge = Conekta_Charge::create(array(
-	    "amount"=> 51000,
-	    "currency"=> "MXN",
-	    "description"=> "Pizza Delivery",
-	    "reference_id"=> "orden_de_id_interno",
-	    "card"=> "tok_a4Ff0dD2xYZZq82d9"
-	  ));
-} catch (Conekta_Error $e) {
-  $result .= $e->getMessage(); //Dev Message
-  $result .= $e->message_to_purchaser;
-  //El pago no pudo ser procesado
+      setApiKey($this->apiKey);
+      $valid_order =
+          array(
+              'line_items'=> array(
+                  array(
+                      'name'        => 'Box of Cohiba S1s',
+                      'description' => 'Imported From Mex.',
+                      'unit_price'  => 20000,
+                      'quantity'    => 1,
+                      'sku'         => 'cohb_s1',
+                      'category'    => 'food',
+                      'tags'        => array('food', 'mexican food')
+                      )
+                 ),
+                'currency'    => 'mxn',
+                'metadata'    => array('test' => 'extra info'),
+                'charges'     => array(
+                    array(
+                        'payment_method' => array(
+                            'type'       => 'oxxo_cash',
+                            'expires_at' => strtotime(date("Y-m-d H:i:s")) + "36000"
+                         ),
+                         'amount' => 20000
+                      )
+                  ),
+                  'currency'      => 'mxn',
+                  'customer_info' => array(
+                      'name'  => 'John Constantine',
+                      'phone' => '+5213353319758',
+                      'email' => 'hola@hola.com'
+                  )
+              );
+
+      try {
+        $order = \Conekta\Order::create($valid_order);
+      } catch (\Conekta\ProcessingError $e){
+        echo $e->getMessage();
+      } catch (\Conekta\ParameterValidationError $e){
+        echo $e->getMessage();
+      } finally (\Conekta\Handler $e){
+        echo $e->getMessage();
+      }
 }
         return $result;
     }

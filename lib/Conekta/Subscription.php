@@ -1,40 +1,43 @@
 <?php
 
-class Conekta_Subscription extends Conekta_Resource
+namespace Conekta;
+
+use \Conekta\ConektaResource;
+use \Conekta\Lang;
+use \Conekta\Conekta;
+use \Conekta\Exceptions;
+
+class Subscription extends ConektaResource
 {
-    public function instanceUrl()
-    {
-        $id = $this->id;
-        if (!$id) {
-            throw new Conekta_Error(
-                Conekta_Lang::translate('error.resource.id', array('RESOURCE' => get_class()), Conekta_Lang::EN),
-                Conekta_Lang::translate('error.resource.id_purchaser', null, Conekta::$locale)
-            );
-        }
-        $class = get_class($this);
-        $base = '/subscription';
-        $customerUrl = $this->customer->instanceUrl();
+  public function instanceUrl()
+  {
+    $this->apiVersion = Conekta::$apiVersion;
+    $id = $this->id;
+    parent::idValidator($id);
+    $class = get_class($this);
+    $base = '/subscription';
+    $customerUrl = $this->customer->instanceUrl();
+    
+    return $customerUrl . $base;
+  }
 
-        return "$customerUrl$base";
-    }
+  public function update($params = null)
+  {
+    return parent::_update($params);
+  }
 
-    public function update($params = null)
-    {
-        return self::_update($params);
-    }
+  public function cancel()
+  {
+    return parent::_customAction('post', 'cancel');
+  }
 
-    public function cancel()
-    {
-        return self::_customAction('post', 'cancel');
-    }
+  public function pause()
+  {
+    return parent::_customAction('post', 'pause');
+  }
 
-    public function pause()
-    {
-        return self::_customAction('post', 'pause');
-    }
-
-    public function resume()
-    {
-        return self::_customAction('post', 'resume');
-    }
+  public function resume()
+  {
+    return parent::_customAction('post', 'resume');
+  }
 }
