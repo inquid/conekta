@@ -11,18 +11,9 @@
 This is a php library that allows interaction with https://api.conekta.io API.
 
 ## Installation
+User composer:
 
-Obtain the latest version of the Conekta PHP bindings with:
-
-    git clone https://github.com/conekta/conekta-php
-
-To get started, add the following to your PHP script:
-
-    require_once("/path/to/conekta-php/lib/Conekta.php");
-
-You can also install this library with composer:
-
-  require: "conekta/conekta-php": "4.0.4"
+  require: "inquid/conekta": "dev-master"
 
 ## Usage
 
